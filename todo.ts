@@ -2,6 +2,7 @@ interface TodoItem {
   id: number;
   task: string;
   completed: boolean;
+  dueDate?: Date;
 }
 
 class TodoList {
@@ -17,11 +18,12 @@ class TodoList {
     return selectedTodo;
   }
 
-  addTodo(task: string): void {
+  addTodo(task: string, dueDate?: Date): void {
     const todo: TodoItem = {
       id: Math.random(), // Generate a random number as the id
       task,
       completed: false,
+      dueDate,
     };
     this.todos.push(todo);
     console.log("Todo added");
@@ -46,7 +48,11 @@ class TodoList {
   listTodos(): TodoItem[] {
     console.log("- List of todos -");
     this.todos.forEach((todo) => {
-      console.log(`Task: ${todo.task}, Completed: ${todo.completed}`);
+      console.log(
+        `Task: ${todo.task}, Completed: ${todo.completed}, Due Date: ${
+          todo.dueDate ? todo.dueDate.toDateString() : "NONE"
+        }`
+      );
     });
     console.log("------------------");
 
@@ -64,8 +70,18 @@ class TodoList {
       console.log("Todo task updated");
     }
   }
+
+  // For updating the extended property `dueDate`
+  updateTodoDueDate(id: number, dueDate: Date): void {
+    const selectedTodo = this.getTodo(id);
+    if (selectedTodo) {
+      selectedTodo.dueDate = dueDate;
+      console.log("Todo dueDate updated");
+    }
+  }
 }
 
 const todo = new TodoList();
-
+todo.addTodo("Bag a sac");
+todo.addTodo("OGC", new Date());
 todo.listTodos();
