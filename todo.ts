@@ -1,19 +1,20 @@
-interface TodoItem {
+import { textFormats, truncate } from "./utils";
+
+export interface TodoItem {
   id: number;
   task: string;
   completed: boolean;
   dueDate?: Date;
 }
 
-class TodoList {
-  private todos: TodoItem[] = [];
+export class TodoList {
+  protected todos: TodoItem[] = [];
 
-  // A helper method to get the todo item by id
-  getTodo(id: number): TodoItem | false {
+  // A helper method to get todo item by id
+  getTodo(id: number): TodoItem {
     const selectedTodo = this.todos.find((todo) => todo.id === id);
     if (!selectedTodo) {
-      console.log("Todo not found");
-      return false;
+      throw new TodoListError("Todo not found");
     }
     return selectedTodo;
   }
@@ -26,14 +27,14 @@ class TodoList {
       dueDate,
     };
     this.todos.push(todo);
-    console.log("Todo added");
+    console.log(`Todo "${truncate(task, 15)}" added`);
   }
 
   completeTodo(id: number): void {
     const selectedTodo = this.getTodo(id);
     if (selectedTodo) {
       selectedTodo.completed = true;
-      console.log("Todo completed");
+      console.log("Mark todo as completed");
     }
   }
 
@@ -46,12 +47,19 @@ class TodoList {
   }
 
   listTodos(): TodoItem[] {
+    if (this.todos.length === 0) {
+      console.log(textFormats.red("No todo items to list. Create one first"));
+      return [];
+    }
+
     console.log("- List of todos -");
     this.todos.forEach((todo) => {
       console.log(
-        `Task: ${todo.task}, Completed: ${todo.completed}, Due Date: ${
+        `Task: ${textFormats.bold(todo.task)}, Completed: ${textFormats.bold(
+          todo.completed.toString()
+        )}, Due Date: ${textFormats.bold(
           todo.dueDate ? todo.dueDate.toDateString() : "NONE"
-        }`
+        )}`
       );
     });
     console.log("------------------");
@@ -67,7 +75,7 @@ class TodoList {
     const selectedTodo = this.getTodo(id);
     if (selectedTodo) {
       selectedTodo.task = task;
-      console.log("Todo task updated");
+      console.log(`Todo task updated to ${truncate(task, 15)}`);
     }
   }
 
@@ -76,12 +84,15 @@ class TodoList {
     const selectedTodo = this.getTodo(id);
     if (selectedTodo) {
       selectedTodo.dueDate = dueDate;
-      console.log("Todo dueDate updated");
+      console.log("Todo dueDate updated to", dueDate.toLocaleString());
     }
   }
 }
 
-const todo = new TodoList();
-todo.addTodo("Bag a sac");
-todo.addTodo("OGC", new Date());
-todo.listTodos();
+// This is an extension of Error object that is meant to redirect you to the main menu of the CLI when thrown
+// This is for tracking different errors thrown in the CLI
+export class TodoListError extends Error {
+  type = "todolist";
+}
+
+// For examples, use the CLI (app.ts)
