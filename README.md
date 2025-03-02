@@ -5,7 +5,7 @@ This is a simple Todolist application built with TypeScript and Inquirer.js. The
 ## Features
 
 - Add items to todolist. Items include `task`, `completed` and `dueDate` properties
-- Update task, complete status and dueDate of items in todolist
+- Update `task`, `complete status` and `dueDate` properties of items in todolist
 - Remove an item from todolist
 - CLI for managing todolist
 
@@ -22,3 +22,11 @@ npm install
 
 npm run start
 ```
+
+## File Guide
+
+- `todo.ts` - This contains the main TodoList class required by the given task
+- `app.ts` - This contains an extended version of the TodoList class that support CLI
+- `utils.ts` - This contains reusable helper functions that are needed throughout this task
+- `tsconfig.json` and `package.json` - Configuration files required for the app to run without issues
+- `js/` - This folder contains javascript version of all transpiled typescript file in this task
